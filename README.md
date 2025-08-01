@@ -1,19 +1,18 @@
-# Multi-Tenant Platform with Cloudflare Workers
+# Multi-Tenant Platform built with Cloudflare Workers
 
-A complete multi-tenant platform architecture demonstrating how to use Cloudflare Workers to extend D1, KV, R2, and other Cloudflare services to your end customers with complete isolation.
+A complete multi-tenant platform that uses Workers for Platforms to extend D1, KV, R2, and other Cloudflare services to your end customers with complete isolation.
 
 ### Key Components
 
 - **🚀 Dispatch Worker** (`my-binding-dispatcher/`) - Central routing service that routes requests to their dedicated workers
-- **👤 Customer Workers** (`customer-worker-1/`, `customer-worker-2/`) - Isolated worker instances per customer with dedicated KV and R2 storage
+- **👤 Customer Workers** (`customer-worker-1/`, `customer-worker-2/`) - Isolated worker instances per customer with dedicated KV and R2 storage instances
 
 ## Benefits
 
 ✅ **Complete Isolation** - Each customer has their own worker runtime and storage namespaces  
-✅ **Scalable** - Automatically scales per customer without shared resource contention  
-✅ **Secure** - User-specific authentication with no cross-customer data access  
-✅ **Extensible** - Easy to add new Cloudflare services (D1, Durable Objects, etc.)  
-✅ **Cost-Effective** - Pay-per-use model with no idle resource costs  
+✅ **Scalable** - Automatically scales  
+✅ **Secure** - No cross-customer data access  
+✅ **Extensible** - Easy to extend other Cloudflare services (D1, Durable Objects, etc.)  
 
 ### Worker Isolation Pattern
 
@@ -22,7 +21,7 @@ Each customer worker runs the same `UserWorker` class with the same methods:
 - `setData()`, `getData()`, `deleteData()` for KV operations  
 - `getStats()`, `listFiles()`, `listData()` for analytics
 
-**The key difference**: Each worker instance is bound to **different underlying resources**:
+The key difference is that every worker instance is bound to its own, isolated storage resources (KV namespaces, R2 bucket, etc). 
 
 ```javascript
 // customer-worker-1 bindings
@@ -53,19 +52,19 @@ Same code, but isolated execution environments.
 
 ```mermaid
 graph TB
-    Client[Client App]
-    Dispatcher[Binding Dispatcher<br/>Single Codebase]
-    Worker1[Customer Worker 1<br/>Identical Code]
-    Worker2[Customer Worker 2<br/>Identical Code]
-    KV1[Customer 1 KV<br/>Isolated]
-    R21[Customer 1 R2<br/>Isolated]
-    KV2[Customer 2 KV<br/>Isolated]
-    R22[Customer 2 R2<br/>Isolated]
+    Client[Client]
+    Dispatcher[Dispatcher<br/>]
+    Worker1[Customer Worker 1<br/>]
+    Worker2[Customer Worker 2<br/>]
+    KV1[Customer 1 KV<br/>]
+    R21[Customer 1 R2<br/>]
+    KV2[Customer 2 KV<br/>]
+    R22[Customer 2 R2<br/>]
     
     Client -->|X-User-ID: user1| Dispatcher
     Client -->|X-User-ID: user2| Dispatcher
-    Dispatcher -->|Route to user1| Worker1
-    Dispatcher -->|Route to user2| Worker2
+    Dispatcher -->|Route user1| Worker1
+    Dispatcher -->|Route user2| Worker2
     Worker1 --> KV1
     Worker1 --> R21
     Worker2 --> KV2
@@ -153,13 +152,9 @@ npm install
 wrangler deploy
 ```
 
-### 4. Test the System
+### 4. Test
 
 ```bash
-# Test dispatcher health
-curl https://your-dispatcher.workers.dev/ \
-  -H "X-User-ID: test-user"
-
 # Upload a test file
 curl -X POST https://your-dispatcher.workers.dev/files \
   -H "X-User-ID: test-user" \
