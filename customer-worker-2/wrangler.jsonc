@@ -1,0 +1,21 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "customer-worker-2",
+	"main": "src/index.js",
+	"compatibility_date": "2025-07-31",
+	"observability": {
+	  "enabled": true
+	},
+	"kv_namespaces": [
+	  {
+		"binding": "USER_KV",
+		"id": "199cc9ffe49c4f518d812017d49b1452"
+	  }
+	],
+	"r2_buckets": [
+	  {
+		"binding": "USER_R2",
+		"bucket_name": "customer-2-files"
+	  }
+	]
+  }

@@ -1,0 +1,12 @@
+{
+	"name": "my-binding-dispatch",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-07-31",
+	"dispatch_namespaces": [
+		{
+			"binding": "DISPATCHER",
+			"namespace": "bindings", 
+			"experimental_remote": true
+		}
+	]
+}
